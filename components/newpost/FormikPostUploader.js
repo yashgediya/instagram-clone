@@ -55,10 +55,10 @@ const FormikPostUploader = () => {
             placeholderTextColor={'gray'}
             onChangeText={handleChange('imageUrl')}
             onBlur={handleBlur('imageUrl')}
-            value={values.imageUrl}
+            value={values.imgUrl}
           />
-          {errors.imageUrl && (
-            <Text style={{fontSize: 10, color: 'red'}}>{errors.imageUrl}</Text>
+          {errors.imgUrl && (
+            <Text style={{fontSize: 10, color: 'red'}}>{errors.imgUrl}</Text>
           )}
           <View style={{margin: 20, marginHorizontal: 30}}>
             <Button onPress={handleSubmit} title="Share" disabled={!isValid} />
