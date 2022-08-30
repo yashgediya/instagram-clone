@@ -1,10 +1,27 @@
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React from 'react';
+import auth from '@react-native-firebase/auth';
 
 const HeaderComponent = ({navigation}) => {
+  const logOut = async () => {
+    try {
+      await auth().signOut();
+      navigation.navigate('LoginScreen');
+    } catch (error) {
+      Alert.alert(JSON.stringify(error));
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={logOut}>
         <Image
           source={require('../../assets/header-logo.png')}
           style={styles.logo}

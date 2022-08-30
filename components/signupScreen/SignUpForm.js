@@ -5,12 +5,15 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React from 'react';
 
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import Validator from 'email-validator';
+import auth from '@react-native-firebase/auth';
+
 
 const SignUpForm = ({navigation}) => {
   const SignupFormSchema = Yup.object().shape({
@@ -21,11 +24,28 @@ const SignUpForm = ({navigation}) => {
       .min(6, 'Your password has to have at least 6 characters'),
   });
 
+  const onRegisterNewUserSuccess = async () => {
+    await navigation.navigate('HomeScreen');
+  };
+  
+
+
+  const registerNewUser = async (email, password , username) => {
+    console.log(email, password);
+    try {
+      await auth().createUserWithEmailAndPassword(email, password , username);
+      onRegisterNewUserSuccess()
+      navigation.navigate('HomeScreen');
+    } catch (error) {
+      Alert.alert("Please Enter Currect Email or Password or username");
+    }
+  };
+
   return (
     <View style={styles.wrapper}>
       <Formik
         initialValues={{email: '', username: '', password: ''}}
-        onSubmit={() => console.log(values)}
+        onSubmit={values => registerNewUser(values?.email , values?.password , values?.username)}
         validationSchema={SignupFormSchema}
         validateOnMount={true}>
         {({handleChange, handleBlur, handleSubmit, values, isValid}) => (
@@ -99,8 +119,8 @@ const SignUpForm = ({navigation}) => {
                 value={values.password}
               />
             </View>
-            
-            <View  style={{marginTop:50}}>
+
+            <View style={{marginTop: 50}}>
               <Button
                 title="Sign up"
                 onPress={handleSubmit}
@@ -109,8 +129,7 @@ const SignUpForm = ({navigation}) => {
             </View>
             <View style={styles.signUpContainer}>
               <Text>Already have an account?</Text>
-              <TouchableOpacity
-                onPress={() => navigation.push('LoginScreen')}>
+              <TouchableOpacity onPress={() => navigation.push('LoginScreen')}>
                 <Text style={{color: '#6BB0F5'}}>Log In</Text>
               </TouchableOpacity>
             </View>

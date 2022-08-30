@@ -19,7 +19,7 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.awesomeproject.BuildConfig;
+import com.instagramclone.BuildConfig;
 import com.awesomeproject.newarchitecture.components.MainComponentsRegistry;
 import com.awesomeproject.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
