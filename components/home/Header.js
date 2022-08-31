@@ -13,7 +13,6 @@ const HeaderComponent = ({navigation}) => {
   const logOut = async () => {
     try {
       await auth().signOut();
-      navigation.navigate('LoginScreen');
     } catch (error) {
       Alert.alert(JSON.stringify(error));
     }

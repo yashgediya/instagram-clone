@@ -1656,6 +1656,11 @@
   "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-15.4.0.tgz"
   "version" "15.4.0"
 
+"@react-native-firebase/firestore@^15.4.0":
+  "integrity" "sha512-7Kiqn9c4uzQyURFQ4LGCZ4waeZb/hZb/IWl6MlpfkCtII9PnpdqbvQwEKKKg8RQMocP5sbw0qPsKEdYEYUNKhg=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-15.4.0.tgz"
+  "version" "15.4.0"
+
 "@react-native/assets@1.0.0":
   "integrity" "sha512-KrwSpS1tKI70wuKl68DwJZYEvXktDHdZMG0k2AXD/rJVSlB23/X2CB2cutVR0HwNMJIal9HOUOBB2rVfa6UGtQ=="
   "resolved" "https://registry.npmjs.org/@react-native/assets/-/assets-1.0.0.tgz"

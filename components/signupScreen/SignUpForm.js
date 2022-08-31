@@ -13,7 +13,7 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import Validator from 'email-validator';
 import auth from '@react-native-firebase/auth';
-
+import firestore from '@react-native-firebase/firestore';
 
 const SignUpForm = ({navigation}) => {
   const SignupFormSchema = Yup.object().shape({
@@ -27,17 +27,34 @@ const SignUpForm = ({navigation}) => {
   const onRegisterNewUserSuccess = async () => {
     await navigation.navigate('HomeScreen');
   };
-  
 
+  const getRandomProfilePicture = async () => {
+    const response = await fetch('https://randomuser.me/api');
+    const data = await response.json();
+    return data?.results[0].picture.large;
+  };
 
-  const registerNewUser = async (email, password , username) => {
+  const registerNewUser = async (email, password, username) => {
     console.log(email, password);
     try {
-      await auth().createUserWithEmailAndPassword(email, password , username);
-      onRegisterNewUserSuccess()
-      navigation.navigate('HomeScreen');
+      const authUser = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+        username,
+      );
+      firestore()
+        .collection('Users')
+        .doc(authUser.user.email)
+        .set({
+          owner_uid: authUser.user.uid,
+          username: username,
+          email: authUser.user.email,
+          profile_picture: await getRandomProfilePicture(),
+        });
+      onRegisterNewUserSuccess();
     } catch (error) {
-      Alert.alert("Please Enter Currect Email or Password or username");
+      console.log(error);
+      Alert.alert('Please Enter Currect Email or Password or username');
     }
   };
 
@@ -45,7 +62,9 @@ const SignUpForm = ({navigation}) => {
     <View style={styles.wrapper}>
       <Formik
         initialValues={{email: '', username: '', password: ''}}
-        onSubmit={values => registerNewUser(values?.email , values?.password , values?.username)}
+        onSubmit={values =>
+          registerNewUser(values?.email, values?.password, values?.username)
+        }
         validationSchema={SignupFormSchema}
         validateOnMount={true}>
         {({handleChange, handleBlur, handleSubmit, values, isValid}) => (
