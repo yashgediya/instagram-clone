@@ -1,19 +1,23 @@
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
+import auth from '@react-native-firebase/auth';
 import {Divider} from 'react-native-elements';
+import firestore from '@react-native-firebase/firestore';
 
 const Post = props => {
+  const postData = JSON.parse(props.post);
+
   return (
     <View style={{marginBottom: 30}}>
       <Divider width={1} orientation="vertical" />
-      <PostHeader post={props.post} />
-      <PostImage post={props.post} />
+      <PostHeader post={postData} />
+      <PostImage post={postData} />
       <View style={{marginHorizontal: 15, marginTop: 10}}>
-        <PostFooter />
-        <Likes post={props.post} />
-        <Caption post={props.post} />
-        <CommentSection post={props.post} />
-        <Comment post={props.post} />
+        <PostFooter post={postData} />
+        <Likes post={postData} />
+        <Caption post={postData} />
+        <CommentSection post={postData} />
+        <Comment post={postData} />
       </View>
     </View>
   );
@@ -30,11 +34,11 @@ const PostHeader = props => {
       }}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Image
-          source={{uri: props.post.profile_picture}}
+          source={{uri: props?.post?.user?.profilePicture}}
           style={styles.story}
         />
         <Text style={{color: 'white', marginLeft: 10, fontWeight: '700'}}>
-          {props.post.user}
+          {props?.post?.user?.username}
         </Text>
       </View>
       <TouchableOpacity>
@@ -50,41 +54,65 @@ const PostHeader = props => {
 const PostImage = props => (
   <View style={{width: '100%', height: 450}}>
     <Image
-      source={{uri: props.post.imageUrl}}
+      source={{uri: props?.post?.imageUrl}}
       style={{height: '100%', resizeMode: 'cover'}}
     />
   </View>
 );
 
-const PostFooter = () => (
-  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-    <View
-      style={{
-        flexDirection: 'row',
-        width: '32%',
-        justifyContent: 'space-between',
-      }}>
-      <Icon
-        imgstyle={styles.footerIcon}
-        imgurl={require('../../assets/header-like-icon.png')}
-      />
-      <Icon
-        imgstyle={styles.footerIcon}
-        imgurl={require('../../assets/footer-comment-icon.png')}
-      />
-      <Icon
-        imgstyle={styles.footerShareIcon}
-        imgurl={require('../../assets/footer-share-icon.png')}
-      />
+const PostFooter = props => {
+  const handleLike = () => {
+    const currentLikeStatus = !props.post.likes_by_user.includes(
+      auth().currentUser.email,
+    );
+    console.log(currentLikeStatus);
+    firestore()
+      .collection('Users')
+      .doc(props.post.owner_email)
+      .collection('posts')
+      .doc(props.post.id)
+      .update({
+        likes_by_user: currentLikeStatus
+          ? firestore.FieldValue.arrayUnion(auth().currentUser.email)
+          : firestore.FieldValue.arrayRemove(auth().currentUser.email),
+      })
+      .then(res => {
+        console.log('----------');
+      })
+      .catch(err => console.log('=======' , err));
+  };
+  return (
+    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '32%',
+          justifyContent: 'space-between',
+        }}>
+        <TouchableOpacity onPress={handleLike}>
+          <Image
+            style={styles.footerIcon}
+            source={require('../../assets/header-like-icon.png')}
+          />
+        </TouchableOpacity>
+        <Icon
+          imgstyle={styles.footerIcon}
+          imgurl={require('../../assets/footer-comment-icon.png')}
+        />
+        <Icon
+          imgstyle={styles.footerShareIcon}
+          imgurl={require('../../assets/footer-share-icon.png')}
+        />
+      </View>
+      <View>
+        <Icon
+          imgstyle={styles.footerSaveIcon}
+          imgurl={require('../../assets/icons8-save-64.png')}
+        />
+      </View>
     </View>
-    <View>
-      <Icon
-        imgstyle={styles.footerSaveIcon}
-        imgurl={require('../../assets/icons8-save-64.png')}
-      />
-    </View>
-  </View>
-);
+  );
+};
 
 const Icon = ({imgstyle, imgurl}) => (
   <TouchableOpacity>
@@ -95,7 +123,7 @@ const Icon = ({imgstyle, imgurl}) => (
 const Likes = props => (
   <View style={{flexDirection: 'row', marginTop: 4}}>
     <Text style={{color: 'white', fontWeight: '600'}}>
-      {props.post.likes} likes
+      {props?.post?.likes_by_user?.length} likes
     </Text>
   </View>
 );
@@ -103,19 +131,19 @@ const Likes = props => (
 const Caption = props => (
   <View style={{marginTop: 5}}>
     <Text style={{color: 'white'}}>
-      <Text style={{fontWeight: '600'}}>{props.post.user} </Text>
-      <Text> {props.post.caption}</Text>
+      <Text style={{fontWeight: '600'}}>{props.post.user.username} </Text>
+      <Text> {props?.post.caption}</Text>
     </Text>
   </View>
 );
 
 const CommentSection = props => (
   <View style={{marginTop: 5}}>
-    {props.post.commnets.length && (
+    {props?.post?.commnets?.length && (
       <Text style={{color: 'gray'}}>
-        View {props.post.commnets.length > 1 ? 'all' : ''}{' '}
-        {props.post.commnets.length}{' '}
-        {props.post.commnets.length > 1 ? 'Comments' : 'Comment'}
+        View {props?.post?.commnets.length > 1 ? 'all' : ''}{' '}
+        {props?.post?.commnets.length}{' '}
+        {props?.post?.commnets.length > 1 ? 'Comments' : 'Comment'}
       </Text>
     )}
   </View>
@@ -123,8 +151,8 @@ const CommentSection = props => (
 
 const Comment = props => (
   <>
-    {props.post.commnets &&
-      props.post.commnets.map((comment, index) => (
+    {props.post.comments &&
+      props.post.comments.map((comment, index) => (
         <View key={index} style={{flexDirection: 'row', marginTop: 5}}>
           <Text style={{color: 'white'}}>
             <Text style={{fontWeight: '600'}}>{comment.user} </Text>

@@ -35,7 +35,6 @@ const SignUpForm = ({navigation}) => {
   };
 
   const registerNewUser = async (email, password, username) => {
-    console.log(email, password);
     try {
       const authUser = await auth().createUserWithEmailAndPassword(
         email,
@@ -53,7 +52,6 @@ const SignUpForm = ({navigation}) => {
         });
       onRegisterNewUserSuccess();
     } catch (error) {
-      console.log(error);
       Alert.alert('Please Enter Currect Email or Password or username');
     }
   };

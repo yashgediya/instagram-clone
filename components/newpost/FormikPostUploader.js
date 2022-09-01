@@ -25,7 +25,7 @@ const FormikPostUploader = ({navigation}) => {
   const getUserName = () => {
     const user = auth().currentUser;
     const unsubscribe = firestore()
-      .collection('users')
+      .collection('Users')
       .where('owner_uid', '==', user.uid)
       .limit(1)
       .onSnapshot(snapshot =>

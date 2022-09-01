@@ -4,7 +4,6 @@ import {userData} from '../../data/userData';
 import {Divider} from 'react-native-elements';
 
 const BottomTab = () => {
-  console.log(userData[0].Image);
   const bottomIcon = [
     {
       name: 'Home',

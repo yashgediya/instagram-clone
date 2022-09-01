@@ -27,7 +27,6 @@ const LoginForm = ({navigation}) => {
   };
   
   const onLogin = async (email, password) => {
-    console.log(email, password);
     try {
       await auth().signInWithEmailAndPassword(email, password);
       onLoginSuccess();
