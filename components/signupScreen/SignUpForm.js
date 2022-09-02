@@ -107,7 +107,6 @@ const SignUpForm = ({navigation}) => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 textContentType="username"
-                secureTextEntry={true}
                 onChangeText={handleChange('username')}
                 onBlur={handleBlur('username')}
                 value={values.username}

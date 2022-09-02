@@ -30,6 +30,7 @@ const PostHeader = props => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         margin: 5,
+        paddingBottom:5,
         alignItems: 'center',
       }}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -65,7 +66,6 @@ const PostFooter = props => {
     const currentLikeStatus = !props.post.likes_by_user.includes(
       auth().currentUser.email,
     );
-    console.log(currentLikeStatus);
     firestore()
       .collection('Users')
       .doc(props.post.owner_email)
@@ -75,11 +75,7 @@ const PostFooter = props => {
         likes_by_user: currentLikeStatus
           ? firestore.FieldValue.arrayUnion(auth().currentUser.email)
           : firestore.FieldValue.arrayRemove(auth().currentUser.email),
-      })
-      .then(res => {
-        console.log('----------');
-      })
-      .catch(err => console.log('=======' , err));
+      });
   };
   return (
     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -92,7 +88,11 @@ const PostFooter = props => {
         <TouchableOpacity onPress={handleLike}>
           <Image
             style={styles.footerIcon}
-            source={require('../../assets/header-like-icon.png')}
+            source={
+              props.post.likes_by_user.includes(auth().currentUser.email)
+                ? require('../../assets/heart-icon.png')
+                : require('../../assets/header-like-icon.png')
+            }
           />
         </TouchableOpacity>
         <Icon

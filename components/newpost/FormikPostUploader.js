@@ -17,10 +17,7 @@ const uploadPostSchema = Yup.object().shape({
 
 const FormikPostUploader = ({navigation}) => {
   const [thumbnailUrl, setThumbnailUrl] = useState();
-  const [currentLoggedInUser, setCurrentLoggedInUser] = useState({
-    username: '',
-    profilePicture: '',
-  });
+  const [currentLoggedInUser, setCurrentLoggedInUser] = useState();
 
   const getUserName = () => {
     const user = auth().currentUser;
@@ -28,16 +25,18 @@ const FormikPostUploader = ({navigation}) => {
       .collection('Users')
       .where('owner_uid', '==', user.uid)
       .limit(1)
-      .onSnapshot(snapshot =>
-        snapshot.docs.map(doc => {
+      .onSnapshot(
+        snapshot => 
+        snapshot?.docs.map(doc => {
           setCurrentLoggedInUser({
-            username: doc.data()?.username,
-            profilePicture: doc.data()?.profile_picture,
+            username: doc.data().username,
+            profilePicture: doc.data().profile_picture,
           });
         }),
       );
     return unsubscribe;
   };
+
 
   useEffect(() => {
     getUserName();
@@ -53,6 +52,7 @@ const FormikPostUploader = ({navigation}) => {
         user: currentLoggedInUser,
         profile_picture: currentLoggedInUser.profilePicture,
         owner_uid: auth().currentUser.uid,
+        owner_email: auth().currentUser.email,
         caption: caption,
         createdAt: firestore.FieldValue.serverTimestamp(),
         likes: 0,
