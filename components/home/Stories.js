@@ -18,7 +18,7 @@ const Stories = () => {
               <View key={index} style={{alignItems: 'center'}}>
                 <TouchableOpacity>
                   <Image source={{uri: story.Image}} style={styles.story} />
-                  <Text style={{color: 'white'}}>
+                  <Text style={{color: 'white' , paddingLeft:10}}>
                     {story.user.length > 11
                       ? story.user.slice(0, 6).toLowerCase() + '...'
                       : story.user}

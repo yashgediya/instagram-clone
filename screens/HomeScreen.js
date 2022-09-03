@@ -12,7 +12,6 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {
     firestore()
       .collectionGroup('posts')
-      .orderBy("createdAt" , "desc")
       .onSnapshot(snapshot => {
         if (!(snapshot === null)) {
           setPosts(
